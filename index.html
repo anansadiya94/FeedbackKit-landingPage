@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FeedbackKit SDK - AI-Powered Jira Integration for iOS & Android</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --background: #ffffff;
+            --surface: #f5f5f7;
+            --surface-elevated: #ffffff;
+            --text-primary: #1d1d1f;
+            --text-secondary: #6e6e73;
+            --accent: #0071e3;
+            --accent-hover: #0077ed;
+            --border: rgba(0, 0, 0, 0.1);
+            --shadow: rgba(0, 0, 0, 0.1);
+            --gradient-purple: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-blue: linear-gradient(135deg, #0071e3 0%, #00c6fb 100%);
+            --gradient-green: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        [data-theme="dark"] {
+            --background: #000000;
+            --surface: #1d1d1f;
+            --surface-elevated: #2d2d2f;
+            --text-primary: #f5f5f7;
+            --text-secondary: #a1a1a6;
+            --accent: #2997ff;
+            --accent-hover: #0077ed;
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            transition: background-color 0.3s ease;
+        }
+
+        [data-theme="dark"] nav {
+            background: rgba(29, 29, 31, 0.8);
+        }
+
+        nav .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-purple);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--surface);
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .gradient-text {
+            background: var(--gradient-purple);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: clamp(1.125rem, 2vw, 1.5rem);
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 980px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            padding: 5rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .section-header p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--surface-elevated);
+            border-radius: 24px;
+            padding: 2.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--border);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px var(--shadow);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .icon-purple { background: var(--gradient-purple); }
+        .icon-blue { background: var(--gradient-blue); }
+        .icon-green { background: var(--gradient-green); }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Code Block */
+        .code-section {
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 3rem;
+            margin: 4rem 0;
+        }
+
+        pre {
+            background: var(--surface-elevated);
+            border-radius: 16px;
+            padding: 2rem;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+        }
+
+        code {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .code-header h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .copy-btn {
+            padding: 0.5rem 1rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: background 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Demo Section */
+        .demo-container {
+            background: var(--surface);
+            border-radius: 32px;
+            padding: 3rem;
+            margin: 4rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .demo-image {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            display: block;
+            border-radius: 24px;
+            box-shadow: 0 30px 60px var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+            margin: 4rem 0;
+        }
+
+        .stat-item h4 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--gradient-purple);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item p {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+        }
+
+        /* Pricing */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .pricing-card {
+            background: var(--surface-elevated);
+            border-radius: 24px;
+            padding: 2.5rem;
+            border: 2px solid var(--border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--accent);
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px var(--shadow);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px var(--shadow);
+        }
+
+        .pricing-card.featured:hover {
+            transform: translateY(-8px) scale(1.07);
+        }
+
+        .price {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+
+        .price-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            text-align: left;
+            margin: 2rem 0;
+        }
+
+        .pricing-features li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--surface);
+            padding: 4rem 2rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .hero {
+                padding: 4rem 1rem;
+            }
+
+            section {
+                padding: 3rem 0;
+            }
+
+            .features-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .platform-toggle {
+                width: 100%;
+            }
+
+            .platform-btn {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .code-section {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Highlight colors for code */
+        .keyword { color: #ff7ab2; }
+        .string { color: #ff8170; }
+        .comment { color: var(--text-secondary); font-style: italic; }
+        .function { color: #dabaff; }
+        .type { color: #6bdfff; }
+
+        /* Platform Toggle */
+        .platform-toggle {
+            display: inline-flex;
+            background: var(--surface-elevated);
+            border-radius: 12px;
+            padding: 0.25rem;
+            gap: 0.25rem;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .platform-btn {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .platform-btn.active {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .platform-btn:hover:not(.active) {
+            color: var(--text-primary);
+        }
+
+        .platform-content {
+            display: none;
+        }
+
+        .platform-content.active {
+            display: block;
+        }
+
+        /* Platform Badges */
+        .platform-badges {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .platform-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--surface-elevated);
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .platform-badge .icon {
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">FeedbackKit</div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#demo">Demo</a>
+                <a href="#docs">Docs</a>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content fade-in-up">
+            <h1>
+                Beautiful <span class="gradient-text">Jira Integration</span><br>
+                for iOS & Android
+            </h1>
+            <p>
+                FeedbackKit brings AI-powered bug reporting directly into your mobile apps.
+                Create Jira tickets with screenshots in seconds. Built with SwiftUI & Jetpack Compose.
+            </p>
+            <div class="platform-badges">
+                <div class="platform-badge">
+                    <span class="icon">🍎</span>
+                    <span>iOS • SwiftUI • TCA</span>
+                </div>
+                <div class="platform-badge">
+                    <span class="icon">🤖</span>
+                    <span>Android • Compose • MVVM</span>
+                </div>
+            </div>
+            <div class="cta-buttons" style="margin-top: 2rem;">
+                <a href="#" class="btn btn-primary">
+                    Get Started
+                    <span>→</span>
+                </a>
+                <a href="#demo" class="btn btn-secondary">
+                    See Demo
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section>
+        <div class="container">
+            <div class="stats">
+                <div class="stat-item">
+                    <h4>2 min</h4>
+                    <p>Integration Time</p>
+                </div>
+                <div class="stat-item">
+                    <h4>2</h4>
+                    <p>Mobile Platforms</p>
+                </div>
+                <div class="stat-item">
+                    <h4>AI</h4>
+                    <p>Powered Descriptions</p>
+                </div>
+                <div class="stat-item">
+                    <h4>Zero</h4>
+                    <p>Backend Required</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Everything you need to collect feedback</h2>
+                <p>Native mobile SDKs built with modern frameworks: SwiftUI/TCA for iOS and Jetpack Compose/MVVM for Android</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon icon-purple">✨</div>
+                    <h3>AI-Powered Descriptions</h3>
+                    <p>
+                        Automatically improve bug descriptions using ChatGPT.
+                        Transform vague reports into clear, actionable tickets with one tap.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon icon-blue">📸</div>
+                    <h3>Screenshot Attachments</h3>
+                    <p>
+                        Capture and attach screenshots automatically to Jira tickets.
+                        Visual context makes bug fixing faster and more efficient.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon icon-green">🎨</div>
+                    <h3>Beautiful Native Design</h3>
+                    <p>
+                        Modern, polished interface that matches each platform's design language.
+                        Dark mode support and smooth animations included on both iOS and Android.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon icon-purple">⚡</div>
+                    <h3>Zero Backend</h3>
+                    <p>
+                        Direct Jira API integration means no backend infrastructure needed.
+                        Just drop in the SDK and configure your credentials.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon icon-blue">🏗️</div>
+                    <h3>Modern Architecture</h3>
+                    <p>
+                        iOS uses The Composable Architecture (TCA) for predictable state management.
+                        Android uses MVVM pattern with Kotlin Coroutines and Flow.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon icon-green">🔒</div>
+                    <h3>Secure & Private</h3>
+                    <p>
+                        Your data goes directly to your Jira instance.
+                        No third-party servers, no data collection, complete privacy.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Code Example -->
+    <section>
+        <div class="container">
+            <div class="code-section">
+                <div class="code-header">
+                    <h3>Simple Integration</h3>
+                    <button class="copy-btn" onclick="copyCode()">Copy Code</button>
+                </div>
+
+                <div style="display: flex; justify-content: center;">
+                    <div class="platform-toggle">
+                        <button class="platform-btn active" onclick="switchPlatform('ios')" id="ios-btn">
+                            <span>🍎</span>
+                            <span>iOS</span>
+                        </button>
+                        <button class="platform-btn" onclick="switchPlatform('android')" id="android-btn">
+                            <span>🤖</span>
+                            <span>Android</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- iOS Code -->
+                <div class="platform-content active" id="ios-code">
+                    <pre><code id="code-block"><span class="comment">// 1. Add the dependency</span>
+<span class="keyword">import</span> <span class="type">FeedbackKit</span>
+
+<span class="comment">// 2. Present the feedback view</span>
+<span class="keyword">struct</span> <span class="type">MyApp</span>: <span class="type">View</span> {
+    <span class="keyword">@State</span> <span class="keyword">private var</span> showFeedbackKit = <span class="keyword">false</span>
+    <span class="keyword">@State</span> <span class="keyword">private var</span> screenshot: <span class="type">UIImage</span>?
+
+    <span class="keyword">var</span> body: <span class="keyword">some</span> <span class="type">View</span> {
+        <span class="type">Button</span>(<span class="string">"Report Issue"</span>) {
+            screenshot = <span class="type">ScreenshotHelper</span>.<span class="function">captureWindowImage</span>()
+            showFeedbackKit = <span class="keyword">true</span>
+        }
+        .<span class="function">sheet</span>(isPresented: $showFeedbackKit) {
+            <span class="type">FeedbackKitView</span>(.<span class="function">init</span>(screenshot: screenshot))
+        }
+        .<span class="function">onReceive</span>(<span class="type">NotificationCenter</span>.default.<span class="function">publisher</span>(
+            for: <span class="type">UIApplication</span>.userDidTakeScreenshotNotification
+        )) { _ <span class="keyword">in</span>
+            screenshot = <span class="type">ScreenshotHelper</span>.<span class="function">captureWindowImage</span>()
+            showFeedbackKit = <span class="keyword">true</span>
+        }
+    }
+}
+
+<span class="comment">// That's it! 🎉</span></code></pre>
+                </div>
+
+                <!-- Android Code -->
+                <div class="platform-content" id="android-code">
+                    <pre><code><span class="comment">// 1. Add to libs.versions.toml</span>
+[versions]
+feedbackKit = <span class="string">"1.0.0"</span>
+
+[libraries]
+feedback-kit = { group = <span class="string">"com.feedbackkit"</span>, name = <span class="string">"sdk"</span>, version.ref = <span class="string">"feedbackKit"</span> }
+
+<span class="comment">// 2. Add the dependency to build.gradle.kts</span>
+<span class="keyword">dependencies</span> {
+    <span class="function">implementation</span>(libs.feedback.kit)
+}
+
+<span class="comment">// 3. Show feedback screen</span>
+<span class="keyword">class</span> <span class="type">MainActivity</span> : <span class="type">ComponentActivity</span>() {
+    <span class="keyword">override fun</span> <span class="function">onCreate</span>(savedInstanceState: <span class="type">Bundle</span>?) {
+        <span class="keyword">super</span>.<span class="function">onCreate</span>(savedInstanceState)
+
+        <span class="function">setContent</span> {
+            <span class="keyword">var</span> showFeedback <span class="keyword">by</span> <span class="function">remember</span> { <span class="function">mutableStateOf</span>(<span class="keyword">false</span>) }
+
+            <span class="type">Button</span>(onClick = { showFeedback = <span class="keyword">true</span> }) {
+                <span class="type">Text</span>(<span class="string">"Report Issue"</span>)
+            }
+
+            <span class="keyword">if</span> (showFeedback) {
+                <span class="type">FeedbackKitView</span>(
+                    viewModel = <span class="function">viewModel</span>(),
+                    onDismiss = { showFeedback = <span class="keyword">false</span> }
+                )
+            }
+        }
+    }
+}
+
+<span class="comment">// That's it! 🎉</span></code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo">
+        <div class="container">
+            <div class="section-header">
+                <h2>See it in action</h2>
+                <p>Beautiful interfaces for iOS and Android</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem; margin: 3rem 0;">
+                <!-- Screenshot 1 -->
+                <div style="text-align: center;">
+                    <img src="screenshot-feedback-form.png" alt="Jira Feedback Form" style="width: 100%; max-width: 400px; border-radius: 24px; box-shadow: 0 20px 60px var(--shadow); border: 1px solid var(--border);">
+                    <h3 style="margin-top: 1.5rem; font-size: 1.25rem;">Rich Feedback Forms</h3>
+                    <p style="color: var(--text-secondary); margin-top: 0.5rem;">Detailed bug reports with markdown support</p>
+                </div>
+
+                <!-- Screenshot 2 -->
+                <div style="text-align: center;">
+                    <img src="screenshot-ai-generated.png" alt="AI Generated Description with Screenshot" style="width: 100%; max-width: 400px; border-radius: 24px; box-shadow: 0 20px 60px var(--shadow); border: 1px solid var(--border);">
+                    <h3 style="margin-top: 1.5rem; font-size: 1.25rem;">AI-Powered & Screenshots</h3>
+                    <p style="color: var(--text-secondary); margin-top: 0.5rem;">Auto-improve descriptions and attach screenshots</p>
+                </div>
+            </div>
+
+            <div class="demo-container" style="margin-top: 3rem;">
+                <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                    <h3 style="margin-bottom: 1.5rem; color: var(--text-primary);">Beautiful Native Feedback Interface</h3>
+                    <p style="margin-bottom: 2rem;">Clean, intuitive design that users love across both platforms. Support for markdown preview, AI improvements, and instant screenshot capture.</p>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem;">
+                        <div>
+                            <div style="font-size: 2rem;">✍️</div>
+                            <p>Easy title & description</p>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem;">🤖</div>
+                            <p>AI-powered improvements</p>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem;">📋</div>
+                            <p>Markdown preview</p>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem;">🔗</div>
+                            <p>Instant Jira links</p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 3rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <div class="platform-badge">
+                            <span class="icon">🍎</span>
+                            <span>SwiftUI + TCA</span>
+                        </div>
+                        <div class="platform-badge">
+                            <span class="icon">🤖</span>
+                            <span>Jetpack Compose + MVVM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section style="background: var(--surface); padding: 6rem 2rem; text-align: center; border-radius: 32px; margin: 4rem 2rem;">
+        <div class="container">
+            <h2 style="font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1.5rem;">
+                Ready to improve your feedback workflow?
+            </h2>
+            <p style="font-size: 1.25rem; color: var(--text-secondary); margin-bottom: 2.5rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                Join teams already using FeedbackKit to collect better bug reports and ship faster.
+            </p>
+            <div class="cta-buttons">
+                <a href="#" class="btn btn-primary" style="font-size: 1.125rem; padding: 1.25rem 2.5rem;">
+                    Start Free Trial
+                </a>
+                <a href="#" class="btn btn-secondary" style="font-size: 1.125rem; padding: 1.25rem 2.5rem;">
+                    View Documentation
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#features">Features</a>
+                <a href="#docs">Documentation</a>
+                <a href="#support">Support</a>
+                <a href="#privacy">Privacy</a>
+                <a href="#terms">Terms</a>
+            </div>
+            <p style="color: var(--text-secondary); margin-top: 2rem;">
+                &copy; 2025 FeedbackKit SDK. Built with ❤️ for iOS & Android developers.
+            </p>
+            <p style="color: var(--text-secondary); margin-top: 0.5rem; font-size: 0.875rem;">
+                Created during Hackday by Anan Sadiya and Dekel Laifer
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            const icon = document.querySelector('.theme-icon');
+
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            icon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // Initialize theme
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme === 'system' ? (prefersDark ? 'dark' : 'light') : savedTheme;
+            const icon = document.querySelector('.theme-icon');
+
+            document.documentElement.setAttribute('data-theme', theme);
+            icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // Copy code
+        function copyCode() {
+            const activePlatform = document.querySelector('.platform-content.active code');
+            const code = activePlatform ? activePlatform.innerText : document.getElementById('code-block').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        // Switch platform
+        function switchPlatform(platform) {
+            // Update buttons
+            document.querySelectorAll('.platform-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(platform + '-btn').classList.add('active');
+
+            // Update code blocks
+            document.querySelectorAll('.platform-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(platform + '-code').classList.add('active');
+        }
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in-up');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card, .pricing-card, .stat-item').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Initialize
+        initTheme();
+
+        // Navbar background on scroll
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            const currentScroll = window.pageYOffset;
+
+            if (currentScroll > 50) {
+                nav.style.boxShadow = '0 2px 20px var(--shadow)';
+            } else {
+                nav.style.boxShadow = 'none';
+            }
+
+            lastScroll = currentScroll;
+        });
+    </script>
+</body>
+</html>
