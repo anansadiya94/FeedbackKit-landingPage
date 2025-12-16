@@ -642,6 +642,7 @@
             <div class="logo">FeedbackKit</div>
             <div class="nav-links">
                 <a href="#features">Features</a>
+                <a href="#quick-start-demo">Quick Start</a>
                 <a href="#demo">Demo</a>
                 <a href="#docs">Docs</a>
                 <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
@@ -807,14 +808,253 @@
     }
 }
 
-<span class="comment">// 3. With Jira & AI (optional)</span>
-<span class="keyword">import</span> <span class="type">FeedbackKitJira</span>
-<span class="keyword">import</span> <span class="type">FeedbackKitAI</span>
-
+<span class="comment">// 3. With Jira & AI (included in single import!)</span>
 <span class="function">withDependencies</span> {
     $0.feedbackProvider = <span class="type">JiraProvider</span>(configuration: jiraConfig)
     $0.descriptionEnhancer = <span class="type">OpenAIEnhancer</span>(configuration: aiConfig)
-}</code></pre>
+}
+
+<span class="comment">// ✨ Everything from one import - no separate FeedbackKitJira or FeedbackKitAI needed!</span></code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Start Demo Section -->
+    <section id="quick-start-demo" style="background: linear-gradient(180deg, var(--background) 0%, var(--surface) 100%);">
+        <div class="container">
+            <div class="section-header">
+                <h2>Get Started in Minutes</h2>
+                <p>🎉 New: Single import for everything! No more juggling 4-5 packages.</p>
+            </div>
+
+            <!-- Step-by-step Guide -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 3rem 0;">
+                <div style="text-align: center; padding: 1.5rem; background: var(--surface); border-radius: 12px; border: 1px solid var(--border);">
+                    <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--gradient-primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem; margin: 0 auto 1rem;">1</div>
+                    <h4 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; letter-spacing: -0.01em;">Install via SPM</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6;">Add FeedbackKit to your Xcode project dependencies</p>
+                </div>
+                <div style="text-align: center; padding: 1.5rem; background: var(--surface); border-radius: 12px; border: 1px solid var(--border);">
+                    <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--gradient-primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem; margin: 0 auto 1rem;">2</div>
+                    <h4 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; letter-spacing: -0.01em;">Single Import</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6;">Just <code style="background: var(--code-bg); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8125rem;">import FeedbackKit</code> - that's it!</p>
+                </div>
+                <div style="text-align: center; padding: 1.5rem; background: var(--surface); border-radius: 12px; border: 1px solid var(--border);">
+                    <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--gradient-primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem; margin: 0 auto 1rem;">3</div>
+                    <h4 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; letter-spacing: -0.01em;">Configure & Ship</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6;">Set up your provider and start collecting feedback</p>
+                </div>
+            </div>
+
+            <!-- Platform Toggle -->
+            <div style="display: flex; justify-content: center; margin: 2rem 0;">
+                <div class="platform-toggle">
+                    <button class="platform-btn active" onclick="switchPlatform('basic')">
+                        <span>✨</span>
+                        <span>Basic Setup</span>
+                    </button>
+                    <button class="platform-btn" onclick="switchPlatform('jira')">
+                        <span>🔗</span>
+                        <span>With Jira</span>
+                    </button>
+                    <button class="platform-btn" onclick="switchPlatform('ai')">
+                        <span>🤖</span>
+                        <span>Full Setup + AI</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Platform Content: Basic Setup -->
+            <div id="platform-basic" class="platform-content active">
+                <div class="code-section">
+                    <div class="code-header">
+                        <h3>Basic Setup - NoOp Provider</h3>
+                        <button class="copy-btn" onclick="copyPlatformCode('basic')">Copy</button>
+                    </div>
+                    <pre><code id="code-basic"><span class="comment">// Simple feedback collection with console logging</span>
+<span class="keyword">import</span> <span class="type">SwiftUI</span>
+<span class="keyword">import</span> <span class="type">FeedbackKit</span>  <span class="comment">// ✨ One import for everything!</span>
+
+<span class="keyword">struct</span> <span class="type">ContentView</span>: <span class="type">View</span> {
+    <span class="keyword">@State</span> <span class="keyword">private var</span> showFeedback = <span class="keyword">false</span>
+
+    <span class="keyword">var</span> body: <span class="keyword">some</span> <span class="type">View</span> {
+        <span class="type">VStack</span> {
+            <span class="type">Text</span>(<span class="string">"Welcome to My App"</span>)
+                .<span class="function">font</span>(.<span class="function">title</span>)
+
+            <span class="type">Button</span>(<span class="string">"Send Feedback"</span>) {
+                showFeedback = <span class="keyword">true</span>
+            }
+            .<span class="function">buttonStyle</span>(.<span class="function">borderedProminent</span>)
+        }
+        .<span class="function">sheet</span>(isPresented: $showFeedback) {
+            <span class="type">FeedbackView</span>(
+                store: <span class="type">Store</span>(initialState: <span class="type">FeedbackFeature</span>.<span class="type">State</span>()) {
+                    <span class="type">FeedbackFeature</span>()
+                }
+            )
+        }
+    }
+}
+
+<span class="comment">// That's it! Feedback logs to console by default.</span></code></pre>
+                </div>
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-top: 1rem;">
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.7;">
+                        <strong style="color: var(--text-primary);">Perfect for:</strong> Testing, development, and prototyping. The NoOp provider logs feedback to the console without requiring any backend configuration.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Platform Content: Jira Setup -->
+            <div id="platform-jira" class="platform-content">
+                <div class="code-section">
+                    <div class="code-header">
+                        <h3>Jira Integration</h3>
+                        <button class="copy-btn" onclick="copyPlatformCode('jira')">Copy</button>
+                    </div>
+                    <pre><code id="code-jira"><span class="comment">// Submit feedback directly to Jira</span>
+<span class="keyword">import</span> <span class="type">SwiftUI</span>
+<span class="keyword">import</span> <span class="type">FeedbackKit</span>  <span class="comment">// ✨ Includes Core, UI, Jira, and AI!</span>
+
+<span class="keyword">struct</span> <span class="type">ContentView</span>: <span class="type">View</span> {
+    <span class="keyword">@State</span> <span class="keyword">private var</span> showFeedback = <span class="keyword">false</span>
+
+    <span class="keyword">var</span> body: <span class="keyword">some</span> <span class="type">View</span> {
+        <span class="type">Button</span>(<span class="string">"Report an Issue"</span>) {
+            showFeedback = <span class="keyword">true</span>
+        }
+        .<span class="function">sheet</span>(isPresented: $showFeedback) {
+            <span class="type">FeedbackView</span>(
+                store: <span class="type">Store</span>(initialState: <span class="type">FeedbackFeature</span>.<span class="type">State</span>()) {
+                    <span class="type">FeedbackFeature</span>()
+                } withDependencies: {
+                    $0.feedbackProvider = <span class="function">makeJiraProvider</span>()
+                }
+            )
+        }
+    }
+
+    <span class="keyword">func</span> <span class="function">makeJiraProvider</span>() -> <span class="type">JiraProvider</span> {
+        <span class="keyword">let</span> config = <span class="type">JiraConfiguration</span>(
+            baseURL: <span class="type">URL</span>(string: <span class="string">"https://your-company.atlassian.net"</span>)!,
+            email: <span class="type">ProcessInfo</span>.processInfo.environment[<span class="string">"JIRA_EMAIL"</span>]!,
+            apiToken: <span class="type">ProcessInfo</span>.processInfo.environment[<span class="string">"JIRA_API_TOKEN"</span>]!,
+            projectKey: <span class="string">"PROJ"</span>,
+            issueType: <span class="string">"Bug"</span>
+        )
+        <span class="keyword">return</span> <span class="type">JiraProvider</span>(configuration: config)
+    }
+}
+
+<span class="comment">// 🎯 No need to import FeedbackKitJira separately!</span></code></pre>
+                </div>
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-top: 1rem;">
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.7; margin-bottom: 0.75rem;">
+                        <strong style="color: var(--text-primary);">Perfect for:</strong> Production apps that need to track bugs in Jira. Supports custom fields, attachments, and automatic metadata collection.
+                    </p>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.7;">
+                        <strong style="color: var(--text-primary);">💡 Tip:</strong> Store credentials in environment variables, never hardcode them. Use Xcode schemes or .xcconfig files for different environments.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Platform Content: Full Setup with AI -->
+            <div id="platform-ai" class="platform-content">
+                <div class="code-section">
+                    <div class="code-header">
+                        <h3>Full Setup with AI Enhancement</h3>
+                        <button class="copy-btn" onclick="copyPlatformCode('ai')">Copy</button>
+                    </div>
+                    <pre><code id="code-ai"><span class="comment">// Jira + AI-powered description enhancement</span>
+<span class="keyword">import</span> <span class="type">SwiftUI</span>
+<span class="keyword">import</span> <span class="type">FeedbackKit</span>  <span class="comment">// ✨ Everything you need in one import!</span>
+
+<span class="keyword">struct</span> <span class="type">ContentView</span>: <span class="type">View</span> {
+    <span class="keyword">@State</span> <span class="keyword">private var</span> showFeedback = <span class="keyword">false</span>
+
+    <span class="keyword">var</span> body: <span class="keyword">some</span> <span class="type">View</span> {
+        <span class="type">Button</span>(<span class="string">"Send Feedback"</span>) {
+            showFeedback = <span class="keyword">true</span>
+        }
+        .<span class="function">sheet</span>(isPresented: $showFeedback) {
+            <span class="type">FeedbackView</span>(
+                store: <span class="type">Store</span>(initialState: <span class="type">FeedbackFeature</span>.<span class="type">State</span>()) {
+                    <span class="type">FeedbackFeature</span>()
+                } withDependencies: {
+                    <span class="comment">// Configure Jira provider</span>
+                    $0.feedbackProvider = <span class="type">JiraProvider</span>(
+                        configuration: <span class="function">makeJiraConfig</span>()
+                    )
+
+                    <span class="comment">// Add AI enhancement (OpenAI or Claude)</span>
+                    $0.descriptionEnhancer = <span class="type">OpenAIEnhancer</span>(
+                        configuration: .<span class="function">openAI</span>(
+                            apiKey: <span class="type">ProcessInfo</span>.processInfo.environment[<span class="string">"OPENAI_API_KEY"</span>]!
+                        )
+                    )
+
+                    <span class="comment">// Or use Anthropic Claude instead:</span>
+                    <span class="comment">// $0.descriptionEnhancer = AnthropicEnhancer(</span>
+                    <span class="comment">//     configuration: .anthropic(</span>
+                    <span class="comment">//         apiKey: ProcessInfo.processInfo.environment["ANTHROPIC_API_KEY"]!</span>
+                    <span class="comment">//     )</span>
+                    <span class="comment">// )</span>
+                }
+            )
+        }
+    }
+
+    <span class="keyword">func</span> <span class="function">makeJiraConfig</span>() -> <span class="type">JiraConfiguration</span> {
+        <span class="type">JiraConfiguration</span>(
+            baseURL: <span class="type">URL</span>(string: <span class="string">"https://your-company.atlassian.net"</span>)!,
+            email: <span class="type">ProcessInfo</span>.processInfo.environment[<span class="string">"JIRA_EMAIL"</span>]!,
+            apiToken: <span class="type">ProcessInfo</span>.processInfo.environment[<span class="string">"JIRA_API_TOKEN"</span>]!,
+            projectKey: <span class="string">"PROJ"</span>,
+            issueType: <span class="string">"Bug"</span>
+        )
+    }
+}
+
+<span class="comment">// 🚀 All features available without multiple imports!</span></code></pre>
+                </div>
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-top: 1rem;">
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.7; margin-bottom: 0.75rem;">
+                        <strong style="color: var(--text-primary);">Perfect for:</strong> Enterprise apps that want AI to improve vague user feedback into clear, actionable bug reports. Transform "app crashes" into detailed descriptions with steps to reproduce.
+                    </p>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.7;">
+                        <strong style="color: var(--text-primary);">✨ Pro Tip:</strong> The AI enhancer runs automatically when users submit feedback. It analyzes the description, adds context from metadata, and improves clarity - all behind the scenes.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Before/After Comparison -->
+            <div style="margin-top: 3rem; padding: 2rem; background: var(--surface); border-radius: 12px; border: 1px solid var(--border);">
+                <h3 style="text-align: center; margin-bottom: 2rem; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em;">Before vs After</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+                    <div>
+                        <div style="display: inline-block; padding: 0.375rem 0.75rem; background: #fee; color: #c33; border-radius: 6px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem;">BEFORE</div>
+                        <pre style="background: var(--code-bg); padding: 1rem; border-radius: 8px; font-size: 0.75rem; overflow-x: auto;"><code><span class="keyword">import</span> <span class="type">FeedbackKit</span>
+<span class="keyword">import</span> <span class="type">FeedbackKitCore</span>
+<span class="keyword">import</span> <span class="type">FeedbackKitUI</span>
+<span class="keyword">import</span> <span class="type">FeedbackKitJira</span>
+<span class="keyword">import</span> <span class="type">FeedbackKitAI</span>
+
+<span class="comment">// 😰 Too many imports!</span></code></pre>
+                    </div>
+                    <div>
+                        <div style="display: inline-block; padding: 0.375rem 0.75rem; background: #efe; color: #3a3; border-radius: 6px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem;">AFTER</div>
+                        <pre style="background: var(--code-bg); padding: 1rem; border-radius: 8px; font-size: 0.75rem; overflow-x: auto;"><code><span class="keyword">import</span> <span class="type">FeedbackKit</span>
+
+<span class="comment">// ✨ One import, everything included!</span>
+<span class="comment">// Access Core, UI, Jira, and AI</span>
+<span class="comment">// without juggling packages</span></code></pre>
+                    </div>
+                </div>
+                <p style="text-align: center; margin-top: 1.5rem; color: var(--text-secondary); font-size: 0.9375rem;">
+                    Clean, simple, and developer-friendly. Individual modules still available for granular control.
+                </p>
             </div>
         </div>
     </section>
@@ -852,7 +1092,7 @@
                         <div>
                             <div style="font-size: 2rem;">📦</div>
                             <p><strong>FeedbackKit</strong></p>
-                            <small style="color: var(--text-secondary);">All-in-one (Core + UI)</small>
+                            <small style="color: var(--text-secondary);">All-in-one (Core + UI + Jira + AI)</small>
                         </div>
                         <div>
                             <div style="font-size: 2rem;">🎯</div>
@@ -955,6 +1195,38 @@
             const code = document.getElementById('code-block').innerText;
             navigator.clipboard.writeText(code).then(() => {
                 const btn = document.querySelector('.copy-btn');
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        // Platform toggle
+        function switchPlatform(platform) {
+            // Hide all platform content
+            document.querySelectorAll('.platform-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            document.querySelectorAll('.platform-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected platform content
+            document.getElementById(`platform-${platform}`).classList.add('active');
+
+            // Add active class to clicked button
+            event.target.closest('.platform-btn').classList.add('active');
+        }
+
+        // Copy platform-specific code
+        function copyPlatformCode(platform) {
+            const code = document.getElementById(`code-${platform}`).innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = event.target;
                 const originalText = btn.textContent;
                 btn.textContent = 'Copied!';
                 setTimeout(() => {
